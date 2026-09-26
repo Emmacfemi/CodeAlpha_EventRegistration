@@ -2,12 +2,14 @@ require("dotenv").config();
 
 const app = require("./app");
 
+const connectDB = require("./database/connectDB");
+
 
 const PORT = process.env.PORT;
 
 const startServer = async () => {
     try {
-        // await connectDB();
+        await connectDB();
 
         app.on("error", error => {
             console.log("ERROR", error);

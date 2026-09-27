@@ -1,8 +1,12 @@
 const UserModel = require("../model/userModel");
+const bcrypt = require("bcryptjs");
 
 const createUser =async (userData) => {
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+
     const newUser = new UserModel({
-        ...userData
+        ...userData,
+        password: hashedPassword
     });
 
     await newUser.save();
@@ -43,6 +47,7 @@ const updateUserById = async (id, data) => {
         data,
         {
             new: true,
+            runValidator: true
         }
     )
 

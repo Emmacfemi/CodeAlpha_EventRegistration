@@ -3,22 +3,20 @@ const mongoose = require("mongoose");
 const registerModel = new mongoose.Schema(
     {
         user: {
-            type: String,            
-            default: " ",
-            requiured: true,
-            unique: true
+            type: mongoose.Schema.Types.ObjectId,            
+            ref: "USER",
+            required: true,
         },
 
         event: {
-            type: String,
-            minlength: 1,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "EVENT",
             required: true
         },
 
         registerAt: {
-            type: Number,
-            required: true,
-            unique: true
+            type: Date,
+            default: Date.now
         },
 
         status: {
@@ -31,6 +29,19 @@ const registerModel = new mongoose.Schema(
         timestamps: true
     }
 );
+
+// Prevent duplicate registrations for the same user and event combination
+registerModel.index(
+    {
+        user: 1, 
+        event: 1
+    },
+
+    {
+        unique: true
+    }
+);
+
 
 const modelRegister = mongoose.model("REGISTER", registerModel);
 

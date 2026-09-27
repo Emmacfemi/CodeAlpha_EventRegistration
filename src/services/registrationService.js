@@ -1,5 +1,6 @@
 const RegisterModel = require("../model/registrationModel");
 
+// Create a new registration
 const createRegister = async (registerData) => {
     const newRegister = new RegisterModel({
         ...registerData
@@ -10,18 +11,21 @@ const createRegister = async (registerData) => {
     return newRegister;
 };
 
+// Get a registration by ID
 const getRegisterById = async (id) => {
     const register = await RegisterModel.findById(id);
 
     return register;
 };
 
+// Get all Registrations
 const getAllRegister = async () => {
     const registers = await RegisterModel.find({});
 
     return registers;
 };
 
+// Update a Registration byID
 const updateRegisterById = async (id, data) => {
     const register = await RegisterModel.findById(id);
 
@@ -33,13 +37,15 @@ const updateRegisterById = async (id, data) => {
         id,
         data,
         {
-            new: true
+            new: true,
+            runValidators: true
         }
     );
 
     return updatedRegister;
 };
 
+// Delete a Registration by ID
 const deleteRegisterById = async (id) => {
     const register = await RegisterModel.findById(id);
 

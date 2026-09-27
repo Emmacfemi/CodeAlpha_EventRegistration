@@ -8,6 +8,8 @@ const errorHandler = (err, req, res, next) => {
     message: err.message || "Internal Server Error",
     error: process.env.NODE_ENV === "production" ? {} : err
   });
+
+  next();
 };
 
 module.exports = errorHandler;

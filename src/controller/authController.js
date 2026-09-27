@@ -3,10 +3,13 @@ const UserService = require("../services/authService");
 
 const createUser = async (req, res, next) => {
     try{
+        const { name, email, password } = req.body;
+
+        
         const newUser = await UserService.createUser({
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password
+            name,
+            email,
+            password
         });
 
         const userResponse = newUser.toObject();
@@ -33,9 +36,35 @@ const getUserByEmail = async (req, res, next) => {
             });
         }
 
+        const userResponse = user.toObject();
+        delete userResponse.password;
+
+
         return res.status(200).json({
             message: `User fetched successfully`,
-            user: user
+            user: userResponse
+        });
+
+    }catch(error){
+        next(error);
+    }
+}
+
+const loginUser = async (req, res, next) => {
+    try{
+        const { email, password }  = req.body;
+
+        const user = await UserService.loginUser({
+            email,
+            password
+        });
+
+        const userResponse = user.toObject();
+        delete userResponse.password;
+
+        return res.status(200).json({
+            message: `User Logged in successfully`,
+            user: userResponse
         });
 
     }catch(error){
@@ -52,11 +81,15 @@ const getUserById = async (req, res, next) => {
                 message: `User not found`
             });
         }
+        
+        const userResponse = user.toObject();
+        delete userResponse.password;
 
         return res.status(200).json({
             message: `User fetched successfully`,
-            user: user
+            user: userResponse
         });
+
     }catch(error){
         next(error);
     }
@@ -64,11 +97,18 @@ const getUserById = async (req, res, next) => {
 
 const getAllUsers = async (req, res, next) => {
     try{
-        const user = await UserService.getAllUsers();
+        const users = await UserService.getAllUsers();
+
+        const userResponse = users.map((user) => {
+            const userObject = user.toObject();
+            delete userObject.password;
+
+            return userObject;
+        });
 
         return res.status(200).json({
             message: `All Users fetched successfully`,
-            user: user
+            users: userResponse
         });
 
     }catch(error){
@@ -89,9 +129,12 @@ const updateUser = async (req, res, next) => {
             });
         }
 
+        const userResponse = updatedUser.toObject();
+        delete userResponse.password;
+
         return res.status(200).json({
             message: `User updated successfully`,
-            user: updatedUser
+            user: userResponse
         });
 
     }catch(error){
@@ -111,9 +154,12 @@ const deleteUser = async (req, res, next) => {
             });
         }
 
+        const userResponse = deletedUser.toObject();
+        delete userResponse.password;
+
         return res.status(200).json({
             message: `User deleted successfully`,
-            user: deletedUser
+            user: userResponse
         });
 
     }catch(error){
@@ -123,6 +169,7 @@ const deleteUser = async (req, res, next) => {
 
 module.exports = {
     createUser,
+    loginUser,
     getUserByEmail,
     getUserById,
     getAllUsers,

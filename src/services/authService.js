@@ -2,10 +2,34 @@ const UserModel = require("../model/userModel");
 const bcrypt = require("bcryptjs");
 
 const createUser =async (userData) => {
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    const newEmail = userData.email.toLowerCase().trim();
+    const newUsername = userData.name.toLowerCase().trim();
+
+    // check existing email 
+    const existingEmail = await UserModel.findOne({
+        email: newEmail
+    });
+    if(existingEmail){
+       throw new Error(`Email already in use`);
+    }
+
+    // check existing username
+    const existingUsername = await UserModel.findOne({
+        name: newUsername
+    });
+
+    if(existingUsername){
+        throw new Error(`Username already taken`);
+    }
+
+    // generate salt & hash password
+    const salt = await bcrypt.genSalt(13);
+    const hashedPassword = await bcrypt.hash(userData.password, salt);
 
     const newUser = new UserModel({
         ...userData,
+        email: newEmail,
+        name: newUsername,
         password: hashedPassword
     });
 
@@ -15,9 +39,36 @@ const createUser =async (userData) => {
 
 };
 
+const loginUser = async (data) => {
+    const email = data.email.toLowerCase().trim();
+
+    // find user by email
+    const user = await UserModel.findOne({
+        email: email
+    });
+
+    if(!user){
+        throw new Error(`Invalid email or password`);
+    }
+
+    // compare password
+    const isPasswordValid = await bcrypt.compare(
+        data.password,
+        user.password
+    );
+
+    if(!isPasswordValid){
+        throw new Error(`Invalid email or password`);
+    }
+
+    return user;
+
+    
+}
+
 const getUserByEmail = async (email) => {
     const userEmail = await UserModel.findOne({
-        email: email
+        email: email.toLowerCase().trim()
     });
 
     return userEmail;
@@ -47,7 +98,7 @@ const updateUserById = async (id, data) => {
         data,
         {
             new: true,
-            runValidator: true
+            runValidators: true
         }
     )
 
@@ -70,6 +121,7 @@ const deleteUserById = async (id) => {
 
 module.exports = {
     createUser, 
+    loginUser,
     getUserByEmail,
     getUserById,
     getAllUsers,

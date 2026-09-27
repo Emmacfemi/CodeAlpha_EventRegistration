@@ -45,8 +45,33 @@ const updateUserSchema = (req, res, next) => {
     next();
 }
 
+const loginUserValidation = joi.object({
+    email: joi.string().email().required(),
+    password: joi.string().required()
+
+});
+
+const loginUserSchema = (req, res, next) => {
+    const { error, value } = loginUserValidation.validate(req.body,
+        {
+            abortEarly: false
+        }
+    );
+
+    if(error){
+        return res.status(404).json({
+            message: error.details[0].message
+        });
+    }
+
+    req.body = value;
+
+    next();
+}
+
 
 module.exports = {
     postUserSchema,
-    updateUserSchema
+    updateUserSchema,
+    loginUserSchema
 }

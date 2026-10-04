@@ -1,5 +1,5 @@
 const UserService = require("../services/authService");
-
+const jwt = require("jsonwebtoken");
 
 const createUser = async (req, res, next) => {
     try{
@@ -28,7 +28,9 @@ const createUser = async (req, res, next) => {
 
 const getUserByEmail = async (req, res, next) => {
     try{
-        const user = await UserService.getUserByEmail(req.params.email);
+        const user = await UserService.getUserByEmail(
+            req.params.email
+        );
 
         if(!user){
             return res.status(404).json({
@@ -59,11 +61,26 @@ const loginUser = async (req, res, next) => {
             password
         });
 
+        // Generate JWT
+        const token = jwt.sign(
+            {
+                userId: user._id
+            },
+                
+            process.env.JWT_SECRET,
+    
+            {
+                expiresIn: "7d"
+            }
+        );
+        
+        
         const userResponse = user.toObject();
         delete userResponse.password;
 
         return res.status(200).json({
             message: `User Logged in successfully`,
+            token,
             user: userResponse
         });
 
@@ -74,7 +91,9 @@ const loginUser = async (req, res, next) => {
 
 const getUserById = async (req, res, next) => {
     try{
-        const user = await UserService.getUserById(req.params.id);
+        const user = await UserService.getUserById(
+            req.params.id
+        );
 
         if(!user){
             return res.status(404).json({
@@ -119,7 +138,7 @@ const getAllUsers = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try{
         const updatedUser = await UserService.updateUserById(
-            req.params.id,
+            req.user.userId,
             req.body
         );
 
@@ -145,7 +164,7 @@ const updateUser = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
     try{
         const deletedUser = await UserService.deleteUserById(
-            req.params.id,
+            req.user.userId
         );
 
         if(!deletedUser){

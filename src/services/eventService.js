@@ -1,5 +1,6 @@
 const EventModel = require("../model/eventModel");
 
+// CREATE NEW EVENT
 const createEvent = async (eventData) => {
     const newEvent = new EventModel({
         ...eventData
@@ -10,44 +11,92 @@ const createEvent = async (eventData) => {
     return newEvent;
 }
 
+// GET EVENT BY ID
 const getEventById = async (id) => {
     const event = await EventModel.findById(id);
 
     return event;
 }
 
-const getAllEvents = async () => {
-    const event = await EventModel.find({});
+
+// GET ONE EVENT
+const getOneEvent = async (userId, eventId) => {
+    const event = await EventModel.findOne(
+        {
+            _id: eventId,
+            userId
+        },
+    )
 
     return event;
 }
 
-const updateEventById = async (id, data) => {
-    const event = await EventModel.findById(id);
+
+// GET ALL EVENTS
+const getAllEvents = async (userId, page = 1, limit = 10) => {
+    const skip = ( page - 1 ) * limit
+
+    const events = await EventModel.find({
+        userId
+    })
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .skip(skip)
+
+    return events;
+}
+
+
+// UPDATE EVENT
+const updateEventById = async (userId, eventId, eventData) => {
+    const event = await EventModel.findOne(
+        {
+            _id: eventId,
+            userId
+        },
+    );
 
     if(!event){
         return null;
     }
 
-    const updatedEvent = await Eventmodel.findByIdAndUpdate(
-        id, 
-        data,
+    const updatedEvent = await EventModel.findOneAndUpdate(
         {
-            new: true
+            _id: eventId,
+            userId
+        },
+
+        eventData,
+
+        {
+            new: true,
+            runValidators: true
         }
     )
 
     return updatedEvent;
 }
 
-const deleteEventById = async (id) => {
-    const event = await EventModel.findById(id);
+
+// DELETE EVENT
+const deleteEventById = async (userId, eventId) => {
+    const event = await EventModel.findOne(
+        {
+            _id: eventId,
+            userId
+        },
+    );
 
     if(!event){
         return null;
     }
 
-    const deletedEvent = await EventModel.findByIdAndDelete(id);
+    const deletedEvent = await EventModel.findOneAndDelete(
+        {
+            _id: eventId,
+            userId
+        },
+    );
 
     return deletedEvent;
 };
@@ -55,6 +104,7 @@ const deleteEventById = async (id) => {
 module.exports = {
     createEvent,
     getEventById,
+    getOneEvent,
     getAllEvents,
     updateEventById,
     deleteEventById

@@ -2,11 +2,19 @@ const mongoose = require("mongoose");
 
 const eventModel = new mongoose.Schema(
     {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true
+        },
+
         title: {
             type: String,
             minlength: 9,
             maxlength: 12,
-            unique: true
+            unique: true, 
+            required: true,
+            trim: true
         },
         
         description: {
@@ -14,25 +22,25 @@ const eventModel = new mongoose.Schema(
             minlength: 20,
             maxlength: 30,
             required: true,
+            trim: true
         },
 
         date: {
-            type: Number,
+            type: Date,
             required: true,
-            unique: true
         },
 
         location: {
             type: String,
             minlength: 10,
             maxlength: 15,
-            required: true
+            required: true,
+            trim: true
         },
 
         capacity: {
-            type: String,
-            minlength: 1,
-            maxlength: 7,
+            type: Number,
+            min: 1,
             required: true,
         }
 

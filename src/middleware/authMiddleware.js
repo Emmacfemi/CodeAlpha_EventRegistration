@@ -5,16 +5,16 @@ const authMiddleware = (req, res, next) => {
     const authHeader = req.header("x-auth-token");
 
     // Check if token exists
-    if (!authHeader || !authHeader.startWith('Bearer')) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({ 
             message: "No token, Authorization denied" 
         });
     }
 
     // extract token
-    const token = authHeader.split(" ",)[1];
+    const token = authHeader.split(" ")[1];
 
-    try {
+    try {       
         // verify token
         const decoded = jwt.verify(
             token, 

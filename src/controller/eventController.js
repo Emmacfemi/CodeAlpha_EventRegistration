@@ -1,28 +1,37 @@
 const EventService = require("../services/eventService");
 
+// Create Event
 const createEvent = async (req, res, next) => {
     try{
-        const newEvent = new EventService.createEvent({
-            title: req.body.title,
-            description: req.body.description,
-            date: req.body.date,
-            location: req.body.location,
-            capacity: req.body.capacity
+        const { title, description, date, location, capacity } = req.body;
+
+        const newEvent = await EventService.createEvent({
+            userId: req.user.Id,
+            title,
+            description,
+            date,
+            location,
+            capacity
         });
 
-        await newEvent.save();
-
+        
         return res.status(201).json({
-            message: `Event created successfully`
+            message: `Event created successfully`,
+            event: newEvent
         });
+
     }catch(error){
         next(error);
     }
 }
 
+
 const getEventById = async (req, res, next) => {
     try{
-        const event = await EventService.getEventById(req.params.id);
+        const event = await EventService.getOneEvent(
+            req.params.id,
+            req.user.Id
+        );
 
         if(!event){
             return res.status(404).json({
@@ -32,7 +41,7 @@ const getEventById = async (req, res, next) => {
 
         return res.status(200).json({
             message: `Event fetched successfully`,
-            event: event
+            event
         });
 
     }catch(error){
@@ -42,11 +51,13 @@ const getEventById = async (req, res, next) => {
 
 const getAllEvents = async (req, res, next) => {
     try{
-        const event = await EventService.getAllEvents();
+        const events = await EventService.getAllEvents(
+            req.user.Id
+        );
 
         return res.status(200).json({
             message: `All Events fetched successfully`,
-            event: event
+            events
         });
 
     }catch(error){
@@ -58,6 +69,7 @@ const updateEvent = async (req, res, next) => {
     try{
         const event = await EventService.updateEventById(
             req.params.id,
+            req.user.Id,
             req.body
         );
 
@@ -69,7 +81,7 @@ const updateEvent = async (req, res, next) => {
 
         return res.status(200).json({
             message: `Event updated successufully`,
-            event: event
+            event
         });
 
     }catch(error){
@@ -80,7 +92,8 @@ const updateEvent = async (req, res, next) => {
 const deleteEvent = async (req, res, next) => {
     try{
         const event = await EventService.deleteEventById(
-            req.params.id
+            req.params.id,
+            req.user.Id
         );
 
         if(!event){

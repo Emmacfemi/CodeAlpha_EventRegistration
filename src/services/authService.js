@@ -1,6 +1,8 @@
 const UserModel = require("../model/userModel");
 const bcrypt = require("bcryptjs");
 
+
+// Create new User
 const createUser =async (userData) => {
     const newEmail = userData.email.toLowerCase().trim();
     const newUsername = userData.name.toLowerCase().trim();
@@ -39,16 +41,18 @@ const createUser =async (userData) => {
 
 };
 
+
+// Login User
 const loginUser = async (data) => {
     const email = data.email.toLowerCase().trim();
 
     // find user by email
     const user = await UserModel.findOne({
-        email: email
+        email
     });
 
     if(!user){
-        throw new Error(`Invalid email or password`);
+        throw new Error(`Invaild email or password`);
     }
 
     // compare password
@@ -66,6 +70,8 @@ const loginUser = async (data) => {
     
 }
 
+
+// Get User by Email
 const getUserByEmail = async (email) => {
     const userEmail = await UserModel.findOne({
         email: email.toLowerCase().trim()
@@ -74,18 +80,24 @@ const getUserByEmail = async (email) => {
     return userEmail;
 };
 
+
+// Get User by ID
 const getUserById = async (id) => {
     const user = await UserModel.findById(id);
 
     return user;
 };
 
+
+// Get all Users
 const getAllUsers = async () => {
     const user = await UserModel.find({});
 
     return user;
 }
 
+
+// Update User
 const updateUserById = async (id, data) => {
     const user = await UserModel.findById(id);
 
@@ -93,9 +105,55 @@ const updateUserById = async (id, data) => {
         return null;
     }
 
+    // Check email uniqueness
+    if(data.email){
+        data.email = data.email.toLowerCase().trim()
+
+        const existingEmail = await UserModel.findOne({
+            email: data.email,
+            _id: {
+                $ne: id
+            }
+        });
+
+        if(existingEmail){
+            throw new Error(`Email already in use`);
+        }
+
+    }
+
+    // Check username uniqueness
+    if(data.name){
+        data.name = data.name.toLowerCase().trim()
+
+        const existingUsername = await UserModel.findOne({
+            name: data.name,
+            _id: {
+                $ne: id
+            }
+
+        });
+
+        if(existingUsername){
+            throw new Error(`Username already taken`);
+        }
+    }
+
+    // Hash password if password is updated
+    if(data.password){
+        const salt = await bcrypt.genSalt(13);
+
+        data.password = await bcrypt.hash(
+            data.password,
+            salt
+        );
+    }
+
+
     const updatedUser = await UserModel.findByIdAndUpdate(
-        id, 
+        id,
         data,
+
         {
             new: true,
             runValidators: true
@@ -105,6 +163,8 @@ const updateUserById = async (id, data) => {
     return updatedUser;
 }
 
+
+// Delete User
 const deleteUserById = async (id) => {
     const user = await UserModel.findById(id);
 

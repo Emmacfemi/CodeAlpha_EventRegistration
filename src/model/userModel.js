@@ -4,23 +4,23 @@ const userModel = new mongoose.Schema(
     {
         name:{
             type: String,
-            minlength: 7,
-            maxlength: 10,
+            minlength: 3,
+            maxlength: 60,
             unique: true,
-            required: true
+            required: true,
+            trim: true
         },
 
         email: {
             type: String,
             unique: true,
-            required: true
+            required: true,
+            trim: true,
+            lowercase: true
         },
 
         password: {
             type: String,
-            unique: true,
-            minlength: 15,
-            maxlength: 18,
             required: true,
         }
     },

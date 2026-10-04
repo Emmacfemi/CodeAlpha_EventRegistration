@@ -11,31 +11,48 @@ const createRegister = async (registerData) => {
     return newRegister;
 };
 
+
 // Get a registration by ID
 const getRegisterById = async (id) => {
-    const register = await RegisterModel.findById(id);
+    const register = await RegisterModel.findById(id)
+            .populate("user")
+            .populate("event")
 
     return register;
 };
 
+
 // Get all Registrations
 const getAllRegister = async () => {
-    const registers = await RegisterModel.find({});
+    const registers = await RegisterModel.find({})
+            .populate("user")
+            .populate("event")
 
     return registers;
 };
 
+
 // Update a Registration byID
-const updateRegisterById = async (id, data) => {
-    const register = await RegisterModel.findById(id);
+const updateRegisterById = async (registrationId, userId, registrationData) => {
+    const register = await RegisterModel.findOne(
+        {
+            _id: registrationId,
+            user: userId
+        },
+    );
 
     if (!register) {
         return null;
     }
 
-    const updatedRegister = await RegisterModel.findByIdAndUpdate(
-        id,
-        data,
+    const updatedRegister = await RegisterModel.findOneAndUpdate(
+        {
+            _id: registrationId,
+            user: userId
+        },
+
+        registrationData,
+
         {
             new: true,
             runValidators: true
@@ -45,15 +62,26 @@ const updateRegisterById = async (id, data) => {
     return updatedRegister;
 };
 
+
 // Delete a Registration by ID
-const deleteRegisterById = async (id) => {
-    const register = await RegisterModel.findById(id);
+const deleteRegisterById = async (registrationId, userId ) => {
+    const register = await RegisterModel.findOne(
+        {
+            _id: registrationId,
+            user: userId
+        },
+    );
 
     if (!register) {
         return null;
     }
 
-    const deletedRegister = await RegisterModel.findByIdAndDelete(id);
+    const deletedRegister = await RegisterModel.findOneAndDelete(
+        {
+            _id: registrationId,
+            userId: userId
+        }
+    );
 
     return deletedRegister;
 };

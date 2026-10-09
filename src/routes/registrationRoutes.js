@@ -15,7 +15,7 @@ const {
     getRegisterById,
     updateRegister,
     deleteRegister
-} = require("../controller/registrationController");
+} = require("../controllers/registrationController");
 
 
 registrationRoutes.get("/test", (req, res) => {

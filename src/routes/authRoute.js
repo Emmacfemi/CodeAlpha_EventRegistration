@@ -12,7 +12,7 @@ const {
     getAllUsers,
     updateUser,
     deleteUser
-} = require ("../controller/authController");
+} = require ("../controllers/authController");
 
 const {
     postUserSchema,

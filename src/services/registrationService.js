@@ -1,4 +1,4 @@
-const RegisterModel = require("../model/registrationModel");
+const RegisterModel = require("../models/registrationModel");
 
 // Create a new registration
 const createRegister = async (registerData) => {

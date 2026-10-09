@@ -138,7 +138,7 @@ const getAllUsers = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try{
         const updatedUser = await UserService.updateUserById(
-            req.user.userId,
+            req.user.Id,
             req.body
         );
 

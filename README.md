@@ -52,11 +52,12 @@ CodeAlpha_EventRegistration/
 │   │   ├── eventService.js
 │   │   └── registrationService.js
 │   └── app.js
+│   └── server.js
 ├── .env
 ├── .gitignore
 ├── package.json
 ├── README.md
-└── server.js
+
 ```
 
 ## Requirements

@@ -11,7 +11,7 @@ const eventModel = new mongoose.Schema(
         title: {
             type: String,
             minlength: 9,
-            maxlength: 12,
+            maxlength: 40,
             unique: true, 
             required: true,
             trim: true
@@ -20,7 +20,7 @@ const eventModel = new mongoose.Schema(
         description: {
             type: String,
             minlength: 20,
-            maxlength: 30,
+            maxlength:200,
             required: true,
             trim: true
         },

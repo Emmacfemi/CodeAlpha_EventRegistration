@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const authMiddleware = (req, res, next) => {
     // Get token from request header
-    const authHeader = req.header("x-auth-token");
+    const authHeader = req.headers.authorization;
 
     // Check if token exists
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -22,7 +22,9 @@ const authMiddleware = (req, res, next) => {
         );
 
         // store decoded user information in request
-        req.user = decoded;
+        req.user = {
+            id: decoded.userId
+        };
 
         // contiune to next middleware
         next();

@@ -20,11 +20,11 @@ const getEventById = async (id) => {
 
 
 // GET ONE EVENT
-const getOneEvent = async (userId, eventId) => {
+const getOneEvent = async (eventId, userId) => {
     const event = await EventModel.findOne(
         {
             _id: eventId,
-            userId
+            userId: userId
         },
     )
 

@@ -2,6 +2,8 @@ const express = require("express");
 
 const eventRoutes = express.Router();
 
+const authMiddleware = require("../middleware/authMiddleware")
+
 const {
     createEvent,
     getEventById,
@@ -23,15 +25,15 @@ eventRoutes.get("/test", (req, res) => {
     });
 });
 
-eventRoutes.get("/", getAllEvents);
+eventRoutes.get("/", authMiddleware, getAllEvents);
 
-eventRoutes.post("/", postEventSchema, createEvent);
+eventRoutes.post("/", authMiddleware, postEventSchema, createEvent);
 
-eventRoutes.get("/:id", getEventById);
+eventRoutes.get("/:id", authMiddleware, getEventById);
 
-eventRoutes.put("/:id", updateEventSchema, updateEvent);
+eventRoutes.put("/:id", authMiddleware, updateEventSchema, updateEvent);
 
-eventRoutes.delete("/:id", deleteEvent);
+eventRoutes.delete("/:id", authMiddleware, deleteEvent);
 
 
 module.exports = eventRoutes;

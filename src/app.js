@@ -23,9 +23,9 @@ app.use(logHandler);
 
 
 // routes
-app.use("/auth", authRoutes);
-app.use("/events", eventRoutes);
-app.use("/registers", registrationRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/registers", registrationRoutes);
 
 
 // Global Error Middleware 

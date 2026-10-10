@@ -26,7 +26,7 @@ registrationRoutes.get("/test", (req, res) => {
 
 
 // CREATE REGISTER
-registrationRoutes.post("/", authMiddleware, registerSchemaValidation, createRegister);
+registrationRoutes.post("/register", authMiddleware, registerSchemaValidation, createRegister);
 
 
 // GET ALL REGISTERS

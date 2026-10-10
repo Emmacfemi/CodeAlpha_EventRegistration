@@ -6,7 +6,7 @@ const createEvent = async (req, res, next) => {
         const { title, description, date, location, capacity } = req.body;
 
         const newEvent = await EventService.createEvent({
-            userId: req.user.Id,
+            userId: req.user.id,
             title,
             description,
             date,
@@ -30,7 +30,7 @@ const getEventById = async (req, res, next) => {
     try{
         const event = await EventService.getOneEvent(
             req.params.id,
-            req.user.Id
+            req.user.id 
         );
 
         if(!event){
@@ -52,7 +52,7 @@ const getEventById = async (req, res, next) => {
 const getAllEvents = async (req, res, next) => {
     try{
         const events = await EventService.getAllEvents(
-            req.user.Id
+            req.user.id
         );
 
         return res.status(200).json({
@@ -68,8 +68,8 @@ const getAllEvents = async (req, res, next) => {
 const updateEvent = async (req, res, next) => {
     try{
         const event = await EventService.updateEventById(
+            req.user.id,
             req.params.id,
-            req.user.Id,
             req.body
         );
 
@@ -92,8 +92,8 @@ const updateEvent = async (req, res, next) => {
 const deleteEvent = async (req, res, next) => {
     try{
         const event = await EventService.deleteEventById(
+            req.user.id,
             req.params.id,
-            req.user.Id
         );
 
         if(!event){
@@ -104,7 +104,7 @@ const deleteEvent = async (req, res, next) => {
 
         return res.status(200).json({
             message: `Event deleted successfully`,
-            event: event
+            event
         });
 
     }catch(error){

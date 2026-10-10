@@ -31,7 +31,7 @@ authRoutes.get("/test", (req, res) => {
 
 
 // REGISTER
-authRoutes.post("/", postUserSchema, createUser);
+authRoutes.post("/register", postUserSchema, createUser);
 
 
 // LOGIN
